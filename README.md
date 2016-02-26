@@ -1,5 +1,3 @@
-insParse1.gif
-
 # Project 6 - *InstaParse*
 
 **InstaParse** is a photo sharing app using Parse as its backend.

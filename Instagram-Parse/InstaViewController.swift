@@ -69,7 +69,9 @@ class InstaViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.commentLabel.text = mediaData![indexPath.section]["caption"] as? String
         let imgFile = mediaData![indexPath.section]["media"] as? PFFile
         imgFile?.getDataInBackgroundWithBlock({ (img:NSData?, error:NSError?) -> Void in
-            cell.instaImage.image = UIImage(data: img!)
+            if error == nil {
+                cell.instaImage.image = UIImage(data: img!)
+            }
         })
 
         return cell
@@ -91,12 +93,17 @@ class InstaViewController: UIViewController, UITableViewDelegate, UITableViewDat
         profileView.layer.borderWidth = 1;
         profileView.layer.backgroundColor = UIColor.grayColor().CGColor
         
-        if let imgFile = mediaData![section]["author"]["avatar"] as? PFFile {
+        if let imgFile = (mediaData![section]["author"] as? PFUser)!["avatar"] as? PFFile {
+            print("get img")
             imgFile.getDataInBackgroundWithBlock({ (img:NSData?, error:NSError?) -> Void in
-                print("get")
-                profileView.image = UIImage(data: img!)
+                if (error == nil) {
+                    profileView.image = UIImage(data: img!)
+                }
             })
         }
+        
+//        let imgFile = ((mediaData![section] as! PFObject)["author"] as? PFUser)["avatar"] as? PFFile
+        
         let goToProfileTap = UITapGestureRecognizer(target: self, action: "goToProfile:")
         profileView.addGestureRecognizer(goToProfileTap)
         profileView.userInteractionEnabled = true
@@ -133,10 +140,11 @@ class InstaViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let user = mediaData![index!]["author"] as! PFUser
         detailView.username = user.username
 
-        if let imgFile = mediaData![index!]["author"]["avatar"] as? PFFile {
+        if let imgFile = (mediaData![index!]["author"] as? PFUser)!["avatar"] as? PFFile {
             imgFile.getDataInBackgroundWithBlock({ (img:NSData?, error:NSError?) -> Void in
-                print("get")
-                detailView.avatar = UIImage(data: img!)
+                if error == nil {
+                    detailView.avatar = UIImage(data: img!)
+                }
             })
         }
 //        detailView.avatar = mediaData[index]
